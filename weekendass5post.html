@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Post Management with Images</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			margin: 0;
+			padding: 0;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			min-height: 100vh;
+			background-color: #f4f4f4;
+		}
+		.container {
+			width: 500px;
+			background: #fff;
+			padding: 20px;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+			border-radius: 8px;
+		}
+		.input-group {
+			display: flex;
+			flex-direction: column;
+			margin-bottom: 20px;
+		}
+		.input-group label {
+			margin-bottom: 5px;
+		}
+		.input-group input[type="text"],
+		.input-group input[type="file"] {
+			padding: 10px;
+			border: 1px solid #ccc;
+			border-radius: 5px;
+		}
+		.input-group button {
+			margin-top: 10px;
+			padding: 10px;
+			border: none;
+			background-color: #28a745;
+			color: white;
+			border-radius: 5px;
+			cursor: pointer;
+		}
+		.input-group button:hover {
+			background-color: #218838;
+		}
+		.post-list {
+			list-style: none;
+			padding: 0;
+		}
+		.post {
+			display: flex;
+			flex-direction: column;
+			padding: 10px;
+			border-bottom: 1px solid #ccc;
+		}
+		.post img {
+			max-width: 100%;
+			border-radius: 5px;
+			margin-bottom: 10px;
+		}
+		.post-caption {
+			font-size: 1.2em;
+			margin-bottom: 10px;
+		}
+		.post button {
+			margin-right: 10px;
+			padding: 5px 10px;
+			border: none;
+			border-radius: 5px;
+			cursor: pointer;
+		}
+		.post .edit-btn {
+			background-color: #007bff;
+			color: white;
+		}
+		.post .edit-btn:hover {
+			background-color: #0056b3;
+		}
+		.post .delete-btn {
+			background-color: #dc3545;
+			color: white;
+		}
+		.post .delete-btn:hover {
+			background-color: #c82333;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<h2>Hello Dhukar!</h2>
+		<div class="input-group">
+			<label for="captionInput">Caption</label>
+			<input type="text" id="captionInput" placeholder="Enter your caption">
+			<label for="imageInput">Select Image</label>
+			<input type="file" id="imageInput" accept="image/*">
+			<button onclick="addPost()">Add Post</button>
+		</div>
+		<ul id="postList" class="post-list"></ul>
+	</div>
+
+	<script>
+		function addPost() {
+			const captionInput = document.getElementById('captionInput').value.trim();
+			const imageInput = document.getElementById('imageInput').files[0];
+
+			if (!captionInput || !imageInput) {
+				alert('Please provide both a caption and an image.');
+				return;
+			}
+
+			const reader = new FileReader();
+			reader.onload = function (event) {
+				const postList = document.getElementById('postList');
+
+				
+				const postItem = document.createElement('li');
+				postItem.className = 'post';
+
+				
+				const imgElement = document.createElement('img');
+				imgElement.src = event.target.result;
+				imgElement.alt = captionInput;
+
+				const captionElement = document.createElement('div');
+				captionElement.className = 'post-caption';
+				captionElement.textContent = captionInput;
+
+				const editBtn = document.createElement('button');
+				editBtn.textContent = 'Edit';
+				editBtn.className = 'edit-btn';
+				editBtn.onclick = () => editPost(postItem, captionElement);
+
+				const deleteBtn = document.createElement('button');
+				deleteBtn.textContent = 'Delete';
+				deleteBtn.className = 'delete-btn';
+				deleteBtn.onclick = () => deletePost(postItem);
+
+				postItem.appendChild(imgElement);
+				postItem.appendChild(captionElement);
+				postItem.appendChild(editBtn);
+				postItem.appendChild(deleteBtn);
+
+				postList.appendChild(postItem);
+			};
+
+			reader.readAsDataURL(imageInput);
+
+			document.getElementById('captionInput').value = '';
+			document.getElementById('imageInput').value = '';
+		}
+
+		function editPost(postItem, captionElement) {
+			const newCaption = prompt('Edit your caption:', captionElement.textContent);
+			if (newCaption !== null) {
+				captionElement.textContent = newCaption.trim() || captionElement.textContent;
+			}
+		}
+
+		function deletePost(postItem) {
+			if (confirm('Are you sure you want to delete this post?')) {
+				postItem.remove();
+			}
+		}
+	</script>
+</body>
+</html>
